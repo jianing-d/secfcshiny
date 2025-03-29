@@ -281,6 +281,25 @@ server <- function(input, output, session) {
       theme_minimal(base_size = 14) +
       theme(legend.position = "none")
   })
+  
+  output$downloadData <- downloadHandler(
+    filename = function() {
+      paste0("SECFC_Results_", Sys.Date(), ".csv")
+    },
+    content = function(file) {
+      df <- emissions()
+      if (nrow(df) == 0) return(NULL)
+      
+      result <- tibble::tibble(
+        Category = c("Food", "Consumption", "Transport", "Housing", "Pets", "Total"),
+        Emissions_kgCO2e_per_year = c(df$FoodEmissions, df$ConsEmissions, df$TransportEmissions, df$HousingEmissions, df$PetEmissions, df$TotalEmissions)
+      )
+      
+      write.csv(result, file, row.names = FALSE)
+    }
+  )
+  
 }
+
 
 shinyApp(ui = ui, server = server)
