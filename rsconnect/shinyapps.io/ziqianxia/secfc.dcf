@@ -1,0 +1,12 @@
+name: secfc
+title: secfc
+username: ziqianxia
+account: ziqianxia
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 14372327
+bundleId: 10022793
+url: https://ziqianxia.shinyapps.io/secfc/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
