@@ -133,7 +133,39 @@ ui <- fluidPage(
                    column(6, img(src = "post1.png", width = "100%")),
                    column(6, img(src = "post2.png", width = "100%"))
                  )
+        ),
+        tabPanel("👥 About / Contact",
+                 h4("📦 SECFC: Survey-Embedded Carbon Footprint Calculator"),
+                 br(),
+                 tags$h5("Developers"),
+                 tags$ul(
+                   tags$li(
+                     strong("Jianing Ding"),
+                     tags$br(), "📧 ", tags$a(href = "mailto:jianing.research@gmail.com", "jianing.research@gmail.com"),
+                     tags$br(), "🏫 Tongji University"
+                   ),
+                   tags$li(
+                     strong("Ziqian Xia"),
+                     tags$br(), "📧 ", tags$a(href = "mailto:ziqianx@stanford.edu", "ziqianx@stanford.edu"),
+                     tags$br(), "🏫 Stanford University"
+                   ),
+                   tags$li(
+                     strong("Nathaniel Geiger"),
+                     tags$br(), "📧 ", tags$a(href = "mailto:geigern@umich.edu", "geigern@umich.edu"),
+                     tags$br(), "🏫 University of Michigan"
+                   )
+                 ),
+                 br(),
+                 tags$p("This application is built to transparently calculate individual carbon footprints using survey-embedded inputs."),
+                 br(),
+                 tags$a(
+                   href = "https://jianing-d.github.io/SECFC/",
+                   target = "_blank",
+                   "🌐 Visit the official SECFC Website"
+                 )
         )
+        
+        
       )
     )
     
