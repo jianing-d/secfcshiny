@@ -111,7 +111,7 @@ ui <- fluidPage(
                  h4("📈 Carbon Emissions by Category (kg CO₂e/year)"),
                  tableOutput("detail_output"),
                  br(),
-                 plotOutput("emission_plot", height = "400px")
+                 plotOutput("emission_plot", width = "1000px", height = "400px")
         ),
         tabPanel("🌿 Tips to Reduce Emissions",
                  h4("💡 Simple Tips to Lower Your Carbon Footprint"),
@@ -231,7 +231,7 @@ server <- function(input, output, session) {
       mutate(
         Percentage = Emissions / sum(Emissions) * 100,
         Label = paste0(round(Emissions, 1), " kg\n", round(Percentage, 1), "%"),
-        hjust_value = ifelse(Category == "Housing", 1.05, -0.1)
+        hjust_value = 1.05
       )
     
     ggplot(data, aes(x = reorder(Category, Emissions), y = Emissions, fill = Category)) +
