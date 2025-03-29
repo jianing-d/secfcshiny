@@ -68,25 +68,31 @@ ui <- fluidPage(
       numericInput("entertainment", "Entertainment (movies, concerts, events)", 60),
       numericInput("healthcare", "Healthcare expenses", 100),
       h4("\U0001F697 Transportation"),
-      selectInput("car_use", "On average, how many days a week do you use a car?",
+      selectInput("car_use", "On average, how many days a week do you use a car?", 
                   choices = c("0 days (I do not use a car)", "1-2 days", "3-4 days", "5-6 days", "Everyday")),
-      selectInput("car_type", "What type of car do you primarily use?",
-                  choices = c("Gasoline Vehicle", "Diesel Vehicle", "Hybrid Vehicle", "Electric Vehicle", "Natural Gas Vehicle")),
-      numericInput("car_km", "How far do you drive per day you use a car? (km)", 15, min = 0, max = 200),
-      selectInput("public_transport_use", "How often do you use inner-city public transportation?",
+      selectInput("car_type", "What type of car do you primarily use?", 
+                  choices = c("Electric Vehicle", "Hybrid Vehicle", "Gasoline Vehicle", "Diesel Vehicle", "Natural gas Vehicle")),
+      selectInput("car_km", "On the days you use a car, how many miles do you drive on average?", 
+                  choices = c("0-5 km or 0-3.1 miles", "5-10 km or 3.1-6.2 miles", "11-50 km or 6.2-31 miles", "More than 50 km or 31 miles")),
+      
+      selectInput("public_transport_use", "How often do you use inner-city public transportation (bus, train, tram, subway)?",
                   choices = c("Daily", "Weekly", "Monthly", "Rarely", "Never")),
-      numericInput("public_transport_km", "How far do you commute via public transport? (km)", 10, min = 0, max = 200),
-      selectInput("flight_long", "Long-distance flights (>1,000 mi) per year",
+      selectInput("public_transport_km", "On the days you use public transportation, how far do you typically commute?", 
+                  choices = c("0-5 km or 0-3.1 miles", "5-10 km or 3.1-6.2 miles", "11-50 km or 6.2-31 miles", "More than 50 km or 31 miles")),
+      
+      selectInput("flight_long", "How many long-distance flights (over 1,000 miles) do you take each year?",
                   choices = c("None", "1-3 flights", "4-6 flights", "7-10 flights", "More than 10 flights")),
-      selectInput("flight_short", "Short-distance flights (<1,000 mi) per year",
+      selectInput("flight_short", "How many short-distance flights (under 1,000 miles) do you take each year?",
                   choices = c("None", "1-3 flights", "4-6 flights", "7-10 flights", "More than 10 flights")),
-      selectInput("long_transport", "How often do you use long-distance transport (rail/bus)?",
+      
+      selectInput("long_transport", "How often do you use other long-distance public transport (rail, intercity bus)?", 
                   choices = c("Daily", "Weekly", "Monthly", "Rarely", "Never")),
+      
       h4("\U0001F3E1 Housing & Energy"),
-      sliderInput("electricity", "Monthly electricity bill", 0, 300, 100, step = 30),
-      sliderInput("electricity_alt", "Alternative annual electricity bill (optional)", 0, 300, 0, step = 30),
-      sliderInput("gas", "Monthly natural gas bill", 0, 300, 50, step = 30),
-      sliderInput("gas_alt", "Alternative annual natural gas bill (optional)", 0, 300, 0, step = 30),
+      sliderInput("electricity", "How much do you pay monthly for electricity usage (in USD)?", 0, 300, 100, step = 10),
+      sliderInput("electricity_annually", "How much do you pay annually for electricity usage (in USD)? ", 0, 3600, 0, step = 10),
+      sliderInput("gas", "How much do you pay monthly for natural gas (in USD)?", 0, 300, 50, step = 10),
+      sliderInput("gas_annually", "How much do you pay annually for natural gas (in USD)?", 0, 3600, 0, step = 10),
       h4("\U0001F468‍\U0001F467‍\U0001F467 Household"),
       numericInput("adults", "How many adults (18–64)?", 2),
       numericInput("children", "How many children (<18)?", 1),
@@ -172,18 +178,21 @@ server <- function(input, output, session) {
       CL_03_MonthlyEx_15 = input$healthcare,
       T_01_CarUsage = input$car_use,
       T_02_CarType = input$car_type,
-      T_03_CarDistance = paste0(input$car_km, " km or ", round(input$car_km * 0.621371, 1), " miles"),
+      T_03_CarDistance = input$car_km,
       T_04_PublicTransport = input$public_transport_use,
-      T_05_PublicTransport = paste0(input$public_transport_km, " km or ", round(input$public_transport_km * 0.621371, 1), " miles"),
+      T_05_PublicTransport = input$public_transport_km,
       T_06_AirTravelLong = input$flight_long,
       T_07_AirTravelShort = input$flight_short,
       T_08_LongDistanceTra = input$long_transport,
       EH_02_ElectricityBil_1 = input$electricity,
-      EH_03_ElectricityBil_1 = input$electricity_alt,
+      EH_03_ElectricityBil_1 = input$electricity_annually,
       EH_05_NaturalGasBill_1 = input$gas,
-      EH_06_NaturalGasBill_1 = input$gas_alt,
+      EH_06_NaturalGasBill_1 = input$gas_annually,
       PETS_5 = input$dogs,
-      PETS_4 = input$cats
+      PETS_4 = input$cats,
+      SD_06_HouseholdSize_17 = input$adults,
+      SD_06_HouseholdSize_18 = input$children,
+      SD_06_HouseholdSize_19 = input$seniors
     )
   })
   
@@ -195,7 +204,7 @@ server <- function(input, output, session) {
       df <- calc_transport_emissions(df)
       df <- calc_housing_emissions(df)
       df <- calc_pet_emissions(df)
-      df <- df %>% mutate(TotalEmissions = FoodEmissions + ConsEmissions + TransportEmissions + HousingEmissions + PetEmissions)
+      df <- df %>% mutate(TotalEmissions = FoodEmissions + ConsEmissions + TransportEmissions + HousingEmissions/(SD_06_HouseholdSize_17+SD_06_HouseholdSize_18+SD_06_HouseholdSize_19) + PetEmissions)
       df
     }, error = function(e) {
       print(paste("\U0001F6A8 Calculation Error:", e$message))
